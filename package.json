@@ -4,8 +4,10 @@
   "description": "A notebook app to save notes on the cloud.",
   "main": "index.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "express-validator": "^6.13.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.13"
   },
   "devDependencies": {
