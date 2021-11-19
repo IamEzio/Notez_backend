@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const mongoURI =
-  "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false";
+  "mongodb://localhost:27017/notez?readPreference=primary&appname=MongoDB%20Compass&ssl=false";
 
 const connectToMongo = async () => {
-  mongoose.connect("mongodb://localhost:27017/test", () => {
+  mongoose.connect(mongoURI, () => {
     console.log("Database connected.");
   });
 };
