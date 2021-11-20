@@ -48,4 +48,62 @@ router.post(
   }
 );
 
+// ROUTE 3: Update a note by a user - PUT "/api/notes/:id"
+router.put(
+  "/:id",
+  fetchUser,
+  [
+    body("title", "Title must contain atleast 1 character").isLength({
+      min: 1,
+    }),
+  ],
+  async (req, res) => {
+    // check for invalid note details
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const { title, description, tag } = req.body;
+      const newNote = { title, description, tag };
+      let note = await Note.findById(req.params.id);
+      if (!note) {
+        return res.status(400).json({ error: "Note not found" });
+      }
+      if (note.user.toString() != req.user.id) {
+        return res.status(401).json({ error: "Access denied" });
+      }
+
+      note = await Note.findByIdAndUpdate(
+        req.params.id,
+        { $set: newNote },
+        { new: true }
+      );
+      res.json({ note });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ error: "Internal server error" });
+    }
+  }
+);
+
+// ROUTE 4: Delete a note by a user - DELETE "/api/notes/:id"
+router.delete("/:id", fetchUser, async (req, res) => {
+  try {
+    let note = await Note.findById(req.params.id);
+    if (!note) {
+      return res.status(400).json({ error: "Note not found" });
+    }
+    if (note.user.toString() != req.user.id) {
+      return res.status(401).json({ error: "Access denied" });
+    }
+
+    note = await Note.findByIdAndDelete(req.params.id);
+    res.json({ succes: "Note was successfully deleted!", note });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;
